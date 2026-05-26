@@ -25,14 +25,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/showcase"
-            element={
-              <ProtectedRoute>
-                <ShowcasePage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/showcase" element={<ShowcasePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
