@@ -15,6 +15,7 @@
 
   --font-primary: var(--font-primary);
   --font-secondary: var(--font-secondary);
+  --font-bebas: "Bebas Neue", sans-serif;
 }
 
 :root {
@@ -109,4 +110,28 @@ body {
       20% 100%,
       20% 100%;
   }
+}
+
+.theme-results-page {
+  --background-main: #f5f5f4; /* Equivalent to stone-100 */
+  --text-high-emphasis: #1c1917; /* Equivalent to stone-900 */
+
+  background-color: var(--background-main);
+  color: var(--text-high-emphasis);
+  font-family: "Bebas Neue", sans-serif;
+
+  min-height: 100dvh;
+  width: 100%;
+  display: block;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
 }
