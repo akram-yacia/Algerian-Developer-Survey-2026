@@ -15,10 +15,7 @@ function App() {
         <Toaster position="top-center" />
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/algeria-developer-survey-2026"
-            element={<ResultsPage />}
-          />
+          <Route path="/survey-2026" element={<ResultsPage />} />
           <Route path="/oauth" element={<OAuthPage />} />
           <Route
             path="/survey"

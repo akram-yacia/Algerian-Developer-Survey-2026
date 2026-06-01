@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import ResultsLayout from "../features/results/components/ResultsLayout";
-import ResultsHeader from "../features/results/components/ResultsHeader";
-import SectionTitle from "../features/results/components/SectionTitle";
-import QuestionBanner from "../features/results/components/QuestionBanner";
-import ControlsBar from "../features/results/components/ControlsBar";
-import ChartRenderer from "../features/results/components/ChartRenderer";
+import ResultsLayout from "../features/results/ResultsLayout";
+import ResultsHeader from "../features/results/ResultsHeader";
+import SectionTitle from "../features/results/SectionTitle";
+import QuestionBanner from "../features/results/QuestionBanner";
+import ControlsBar from "../features/results/ControlsBar";
+import ChartRenderer from "../features/results/ChartRenderer";
 
 export default function ResultsPage() {
   const [activeSection, setActiveSection] = useState("career");
