@@ -1,17 +1,12 @@
 import React from "react";
 
-function ResultsHeader() {
+export default function ResultsHeader({ title = "", intro = "" }) {
   return (
     <div className="mb-12">
-      <h1 className="font-bebas mb-4 flex flex-col text-6xl leading-none tracking-wide uppercase md:text-7xl lg:text-8xl">
-        <span>Career &</span>
-        <span>Opportunities</span>
+      <h1 className="font-bebas mb-4 text-6xl leading-none tracking-wide text-black uppercase md:text-7xl">
+        {title}
       </h1>
-      <p className="text-lg text-gray-500 md:text-xl">
-        Career growth opportunities, average salary, bonuses ..etc.
-      </p>
+      <p className="text-sm text-stone-500 md:text-base">{intro}</p>
     </div>
   );
 }
-
-export default ResultsHeader;

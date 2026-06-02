@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { ResultsProvider } from "../Contexts/ResulltsContext";
+import { useResults } from "../Contexts/useResults";
+
 import ResultsLayout from "../features/results/ResultsLayout";
 import ResultsHeader from "../features/results/ResultsHeader";
 import SectionTitle from "../features/results/SectionTitle";
@@ -6,146 +9,108 @@ import QuestionBanner from "../features/results/QuestionBanner";
 import ControlsBar from "../features/results/ControlsBar";
 import ChartRenderer from "../features/results/ChartRenderer";
 
-export default function ResultsPage() {
-  const [activeSection, setActiveSection] = useState("career");
+function ResultsContent() {
+  const { activeSection, setActiveSection, allSectionsData, isLoading, error } =
+    useResults();
   const [isMinimized, setIsMinimized] = useState(false);
 
-  // Helper to render content based on active section
-  const renderContent = () => {
-    switch (activeSection) {
-      case "technologies":
-        return (
-          <>
-            <div className="mb-12">
-              <h1 className="font-bebas mb-4 flex flex-col text-6xl leading-none tracking-wide uppercase md:text-7xl">
-                <span>Technologies</span>
-              </h1>
-              <p className="text-lg text-gray-500 md:text-xl">
-                Most used programming languages, frameworks, tools, etc.
-              </p>
-            </div>
+  // For IntersectionObserver
+  const sectionRefs = useRef({});
 
-            <div
-              id="languages"
-              className="mt-8 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;LANGUAGES /&gt;
-                </h2>
-              </div>
-              <QuestionBanner />
-              <ControlsBar />
-              <ChartRenderer />
-            </div>
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const mappedId = entry.target.getAttribute("data-section");
+            if (mappedId && mappedId !== activeSection) {
+              setActiveSection(mappedId);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -80% 0px", // Trigger when passing the top 20% of the screen
+      },
+    );
 
-            <div
-              id="frameworks"
-              className="mt-16 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;FRAMEWORKS /&gt;
-                </h2>
-              </div>
-              <QuestionBanner />
-              <ControlsBar />
-              <ChartRenderer />
-            </div>
-          </>
-        );
+    Object.values(sectionRefs.current).forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
-      case "demographics":
-        return (
-          <>
-            <div className="mb-12">
-              <h1 className="font-bebas mb-4 flex flex-col text-6xl leading-none tracking-wide uppercase md:text-7xl">
-                <span>Demographics</span>
-              </h1>
-              <p className="text-lg text-gray-500 md:text-xl">
-                Gender distribution, age, education.
-              </p>
-            </div>
+    return () => observer.disconnect();
+  }, [allSectionsData, activeSection, setActiveSection]);
 
-            <div
-              id="gender-dist"
-              className="mt-8 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;GENDER DISTRIBUTION /&gt;
-                </h2>
-              </div>
-              <ChartRenderer />
-            </div>
-
-            <div
-              id="dominant-age"
-              className="mt-16 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;DOMINANT AGE /&gt;
-                </h2>
-              </div>
-              <ChartRenderer />
-            </div>
-
-            <div
-              id="education"
-              className="mt-16 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;EDUCATION /&gt;
-                </h2>
-              </div>
-              <ChartRenderer />
-            </div>
-          </>
-        );
-
-      case "career":
-      default:
-        // Default to career
-        return (
-          <>
-            <ResultsHeader />
-            <div
-              id="average-salary"
-              className="mt-8 border-t border-dashed border-gray-200 pt-8"
-            >
-              <SectionTitle />
-              <QuestionBanner />
-              <ControlsBar />
-              <ChartRenderer />
-            </div>
-            <div
-              id="bonuses"
-              className="mt-16 border-t border-dashed border-gray-200 pt-8"
-            >
-              <div className="mb-4 flex flex-wrap items-center gap-4">
-                <h2 className="font-bebas text-4xl tracking-wide uppercase">
-                  &lt;BONUSES /&gt;
-                </h2>
-              </div>
-              <QuestionBanner />
-              <ControlsBar />
-              <ChartRenderer />
-            </div>
-          </>
-        );
+  const handleSectionChange = (sectionId) => {
+    setActiveSection(sectionId);
+    // Smooth scroll to the specific section
+    const el = sectionRefs.current[sectionId];
+    if (el) {
+      const yOffset = -50; // A bit of padding from top
+      const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: "smooth" });
     }
   };
 
   return (
     <ResultsLayout
       activeSection={activeSection}
-      onSectionChange={setActiveSection}
+      onSectionChange={handleSectionChange}
       isMinimized={isMinimized}
       setIsMinimized={setIsMinimized}
     >
-      <div className="mx-auto w-full max-w-5xl">{renderContent()}</div>
+      <div className="mx-auto w-full max-w-5xl">
+        {isLoading ? (
+          <div className="flex h-96 items-center justify-center text-stone-500">
+            Loading data...
+          </div>
+        ) : error ? (
+          <div className="flex h-96 items-center justify-center text-red-500">
+            Error: {error}
+          </div>
+        ) : allSectionsData?.length > 0 ? (
+          <div className="flex flex-col gap-24">
+            {allSectionsData.map((sectionData) => (
+              <section
+                key={sectionData.mappedId}
+                data-section={sectionData.mappedId}
+                ref={(el) => (sectionRefs.current[sectionData.mappedId] = el)}
+                className="scroll-mt-10"
+              >
+                <ResultsHeader
+                  title={sectionData.title}
+                  intro={sectionData.intro}
+                />
+
+                {sectionData.blocks?.map((block, index) => (
+                  <div
+                    key={block.blockId}
+                    id={block.blockId}
+                    className="mt-16 pt-8"
+                  >
+                    <SectionTitle
+                      title={block.title}
+                      count={block.totalRespondents}
+                      index={index + 1}
+                    />
+                    <QuestionBanner question={block.question} />
+                    <ControlsBar />
+                    <ChartRenderer type={block.chartType} data={block.data} />
+                  </div>
+                ))}
+              </section>
+            ))}
+          </div>
+        ) : null}
+      </div>
     </ResultsLayout>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <ResultsProvider>
+      <ResultsContent />
+    </ResultsProvider>
   );
 }

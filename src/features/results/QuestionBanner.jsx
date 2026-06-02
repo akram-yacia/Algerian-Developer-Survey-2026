@@ -1,16 +1,11 @@
 import React from "react";
 import { HelpCircle } from "lucide-react";
 
-function QuestionBanner() {
+export default function QuestionBanner({ question }) {
   return (
-    <div className="mb-6 flex w-full items-center gap-3 rounded-full border border-indigo-300 bg-white p-4 text-black">
-      <HelpCircle className="ml-2 text-gray-500" size={24} />
-      <span className="text-sm font-medium md:text-base">
-        What is the average salary of a junior position in startups and
-        companies?
-      </span>
+    <div className="mb-6 flex w-full items-center gap-3 rounded-full border border-stone-200 bg-stone-100 p-3 text-stone-900">
+      <HelpCircle className="ml-2 shrink-0 text-stone-600" size={20} />
+      <span className="text-sm font-medium md:text-sm">{question}</span>
     </div>
   );
 }
-
-export default QuestionBanner;

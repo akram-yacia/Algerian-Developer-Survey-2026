@@ -9,11 +9,12 @@ function ResultsLayout({
   setIsMinimized,
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-stone-100 font-sans text-black md:flex-row">
-      {/* Mobile Header */}
-      <div className="flex items-center justify-between bg-stone-100 p-4 md:hidden">
-        <div className="font-bebas text-3xl tracking-wide">STATEOFDEV_DZ</div>
-        <button className="p-2">
+    <div className="flex min-h-screen flex-col bg-stone-100 font-sans text-stone-900 md:flex-row">
+      <div className="flex items-center justify-between border-b border-stone-200 bg-stone-100 p-4 md:hidden">
+        <div className="font-bebas text-3xl tracking-wide text-stone-900">
+          STATEOFDEV<span className="text-stone-500">_DZ</span>
+        </div>
+        <button className="p-2 text-stone-900">
           <svg
             className="h-6 w-6"
             fill="none"
@@ -30,9 +31,8 @@ function ResultsLayout({
         </button>
       </div>
 
-      {/* Desktop Sidebar */}
       <div
-        className={`sticky top-0 hidden h-screen shrink-0 transition-all duration-300 ease-in-out md:block ${
+        className={`sticky top-0 hidden h-screen shrink-0 border-r border-stone-200 transition-all duration-300 ease-in-out md:block ${
           isMinimized ? "w-20" : "w-64"
         }`}
       >
@@ -44,9 +44,8 @@ function ResultsLayout({
         />
       </div>
 
-      {/* Main Content Area */}
-      <main className="min-h-screen min-w-0 flex-1 rounded-t-3xl bg-white p-0 shadow-sm transition-all duration-300 md:rounded-none md:bg-stone-100 md:p-6 md:shadow-none">
-        <div className="h-full scroll-smooth bg-white p-6 md:rounded-xl md:border md:border-stone-200 md:p-10">
+      <main className="flex min-h-screen min-w-0 flex-1 justify-center bg-[#1a1a1a] p-0 transition-all duration-300 md:p-6 lg:p-8">
+        <div className="h-full w-full max-w-5xl scroll-smooth bg-white p-6 shadow-xl md:rounded-2xl md:p-12">
           {children}
         </div>
       </main>
