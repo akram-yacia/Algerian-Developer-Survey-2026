@@ -55,6 +55,7 @@ function ResultsContent() {
   return (
     <ResultsLayout
       activeSection={activeSection}
+      allSectionsData={allSectionsData}
       onSectionChange={handleSectionChange}
       isMinimized={isMinimized}
       setIsMinimized={setIsMinimized}
@@ -90,7 +91,6 @@ function ResultsContent() {
                   >
                     <SectionTitle
                       title={block.title}
-                      count={block.totalRespondents}
                       index={index + 1}
                     />
                     <QuestionBanner question={block.question} />
@@ -100,6 +100,58 @@ function ResultsContent() {
                 ))}
               </section>
             ))}
+
+            <section
+              key="summary"
+              data-section="summary"
+              ref={(el) => (sectionRefs.current.summary = el)}
+              className="scroll-mt-10 rounded-3xl border border-slate-200 bg-slate-50 p-8 shadow-lg"
+            >
+              <div className="mb-6 rounded-2xl bg-indigo-600/5 p-6 text-indigo-900">
+                <h2 className="text-3xl font-semibold text-slate-900">
+                  Summary
+                </h2>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-700">
+                  The charts collectively tell a consistent story: the Algerian
+                  developer community is young, educated, and career-driven,
+                  with AI adoption growing fast even as local infrastructure
+                  and market challenges shape everyday decisions.
+                </p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-3">
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <h3 className="mb-3 text-xl font-semibold text-slate-900">
+                    Demographics
+                  </h3>
+                  <p className="text-sm leading-6 text-slate-600">
+                    Gender, age, and education charts highlight a core group of
+                    mid-career developers with strong academic backgrounds and
+                    a clear preference for stable roles.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <h3 className="mb-3 text-xl font-semibold text-slate-900">
+                    Career outlook
+                  </h3>
+                  <p className="text-sm leading-6 text-slate-600">
+                    Salary and employment data show momentum toward higher pay,
+                    company growth, and a hybrid/remote work mix that matches
+                    global developer demand.
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <h3 className="mb-3 text-xl font-semibold text-slate-900">
+                    AI & opinions
+                  </h3>
+                  <p className="text-sm leading-6 text-slate-600">
+                    AI charts underscore frequent tool usage, while opinion
+                    graphs reveal concerns about local connectivity, career
+                    recognition, and the practical impact of AI.
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
         ) : null}
       </div>

@@ -51,14 +51,10 @@ const NAV_ITEMS = [
     ],
   },
   {
-    id: "technologies",
-    label: "Technologies",
-    icon: Cpu,
-    hasSublinks: true,
-    sublinks: [
-      { id: "languages", label: "Programming Languages" },
-      { id: "frameworks", label: "Frameworks" },
-    ],
+    id: "opinions",
+    label: "Opinions & Preferences",
+    icon: FileText,
+    hasSublinks: false,
   },
   { id: "summary", label: "Summary", icon: FileText, hasSublinks: false },
 ];
@@ -67,11 +63,24 @@ function Sidebar({
   isMinimized,
   onToggleMinimize,
   activeSection,
+  allSectionsData,
   onSectionChange,
 }) {
   const [expandedSections, setExpandedSections] = useState({
     [activeSection]: true,
   });
+
+  const getSectionNavItems = (sectionId) => {
+    const sectionData = allSectionsData?.find(
+      (section) => section.mappedId === sectionId,
+    );
+    return (
+      sectionData?.navItems?.map((navItem) => ({
+        id: navItem.blockId,
+        label: navItem.label,
+      })) || []
+    );
+  };
 
   const handleSectionClick = (item) => {
     onSectionChange(item.id);
@@ -85,10 +94,13 @@ function Sidebar({
     }
   };
 
-  const handleSublinkClick = (sublinkId) => {
+  const handleSublinkClick = (sublinkId, sectionId) => {
+    if (sectionId) {
+      onSectionChange(sectionId);
+    }
+
     const element = document.getElementById(sublinkId);
     if (element) {
-      // Smooth scroll to the part minus a little offset for padding if needed
       const yOffset = -40;
       const y =
         element.getBoundingClientRect().top + window.pageYOffset + yOffset;
@@ -97,7 +109,7 @@ function Sidebar({
   };
 
   return (
-    <div className="flex h-full flex-col bg-stone-100">
+    <div className="flex h-full flex-col bg-slate-950 text-slate-200">
       {/* Pinned top area (Logo + Toggle) */}
       <div
         className={`flex items-center px-6 pt-6 pb-6 ${
@@ -105,13 +117,13 @@ function Sidebar({
         }`}
       >
         {!isMinimized && (
-          <a className="font-bebas mr-auto flex cursor-pointer items-center text-3xl tracking-wide text-stone-900 transition-opacity">
-            STATEOFDEV<span className="text-stone-500">_DZ</span>
+          <a className="font-bebas mr-auto flex cursor-pointer items-center text-3xl tracking-wide text-white transition-opacity">
+            STATEOFDEV<span className="text-indigo-300">_DZ</span>
           </a>
         )}
         <button
           onClick={onToggleMinimize}
-          className={`flex items-center justify-center text-gray-500 transition-transform duration-300 hover:text-black ${isMinimized ? "w-full" : ""}`}
+          className={`flex items-center justify-center text-slate-300 transition-transform duration-300 hover:text-white ${isMinimized ? "w-full" : ""}`}
         >
           {isMinimized ? (
             <PanelLeftOpen size={20} />
@@ -137,8 +149,8 @@ function Sidebar({
                       isMinimized ? "justify-center px-0 py-3" : "px-6 py-2.5"
                     } ${
                       isActive
-                        ? "font-bold text-black"
-                        : "group rounded-r-full font-semibold text-gray-700 hover:bg-stone-200 hover:text-black"
+                        ? "bg-indigo-600 font-bold text-white"
+                        : "group rounded-r-full font-semibold text-slate-200 hover:bg-indigo-800 hover:text-white"
                     }`}
                   >
                     <div className="flex items-center">
@@ -146,14 +158,14 @@ function Sidebar({
                         size={20}
                         className={`${
                           isActive
-                            ? "text-black"
-                            : "text-gray-500 group-hover:text-black"
+                            ? "text-white"
+                            : "text-slate-400 group-hover:text-white"
                         } ${isMinimized ? "mx-auto" : "mr-3"}`}
                       />
                       {!isMinimized && <span>{item.label}</span>}
                     </div>
                     {!isMinimized && (
-                      <span className="text-gray-400">
+                      <span className="text-slate-400">
                         {isExpanded ? (
                           <ChevronDown size={16} />
                         ) : (
@@ -171,16 +183,16 @@ function Sidebar({
                         : "rounded-r-full px-6 py-2.5"
                     } w-full ${
                       isActive
-                        ? "bg-stone-200 font-bold text-black"
-                        : "group font-medium text-gray-700 hover:bg-stone-200 hover:text-black"
+                        ? "bg-indigo-600 font-bold text-white"
+                        : "group font-medium text-slate-200 hover:bg-indigo-800 hover:text-white"
                     }`}
                   >
                     <item.icon
                       size={20}
                       className={`${
                         isActive
-                          ? "text-black"
-                          : "text-gray-500 group-hover:text-black"
+                          ? "text-white"
+                          : "text-slate-400 group-hover:text-white"
                       } ${isMinimized ? "mx-auto" : "mr-3"}`}
                     />
                     {!isMinimized && <span>{item.label}</span>}
@@ -190,13 +202,13 @@ function Sidebar({
                 {/* Sub-items (hidden when minimized) */}
                 {item.hasSublinks && isExpanded && !isMinimized && (
                   <div className="relative space-y-1 pl-12 transition-all duration-300">
-                    <div className="absolute top-0 bottom-4 left-8 w-px bg-stone-300"></div>
+                    <div className="absolute top-0 bottom-4 left-8 w-px bg-slate-700"></div>
 
-                    {item.sublinks.map((sub) => (
+                    {getSectionNavItems(item.id).map((sub) => (
                       <button
                         key={sub.id}
-                        onClick={() => handleSublinkClick(sub.id)}
-                        className="group block w-full rounded-r-full py-2 pr-6 text-left text-sm text-gray-500 transition-colors hover:bg-stone-200 hover:text-black"
+                        onClick={() => handleSublinkClick(sub.id, item.id)}
+                        className="group block w-full rounded-r-full py-2 pr-6 text-left text-sm text-slate-300 transition-colors hover:bg-indigo-900 hover:text-white"
                       >
                         <div className="px-4">{sub.label}</div>
                       </button>

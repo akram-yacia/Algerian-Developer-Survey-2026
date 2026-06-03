@@ -10,6 +10,10 @@ import {
   Cell,
   PieChart,
   Pie,
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
 } from "recharts";
 
 function buildSafeData(data) {
@@ -53,12 +57,12 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="rounded border border-stone-200 bg-white p-3 shadow-lg">
-        <p className="font-semibold text-stone-800">{data.name}</p>
-        <p className="text-sm text-stone-600">
-          Share: <span className="font-bold">{data.value}%</span>
+      <div className="rounded border border-indigo-200 bg-white p-3 shadow-lg">
+        <p className="font-semibold text-slate-900">{data.name}</p>
+        <p className="text-sm text-slate-600">
+          Share: <span className="font-bold text-indigo-700">{data.value}%</span>
         </p>
-        <p className="text-sm text-stone-600">
+        <p className="text-sm text-slate-600">
           Count: {data.count?.toLocaleString()}
         </p>
       </div>
@@ -68,24 +72,23 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 function RechartsBar({ data }) {
-  // We need to pass data that has a "remainder" to effectively create a background bar if we want it in one Bar
-  // But a better way in recharts is to use a background prop on the Bar component.
+  const colors = ["#4338ca", "#0ea5e9", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6", "#60a5fa", "#38bdf8", "#f97316", "#22c55e"];
   return (
-    <div className="h-[400px] w-full pt-4">
-      <div className="mb-2 flex justify-end text-xs text-stone-500">
+    <div className="h-[340px] w-full pt-4 sm:h-[400px]">
+      <div className="mb-2 flex justify-end text-xs text-slate-500">
         Unit: %
       </div>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           layout="vertical"
           data={data}
-          margin={{ top: 0, right: 0, left: 110, bottom: 0 }}
-          barSize={32}
+          margin={{ top: 10, right: 10, left: 90, bottom: 10 }}
+          barSize={24}
         >
           <CartesianGrid
             strokeDasharray="3 3"
             horizontal={false}
-            stroke="#e7e5e4"
+            stroke="#e2e8f0"
           />
           <XAxis
             type="number"
@@ -93,12 +96,12 @@ function RechartsBar({ data }) {
             tickCount={6}
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#a8a29e", fontSize: 12 }}
+            tick={{ fill: "#475569", fontSize: 12 }}
           />
           <YAxis
             type="category"
             dataKey="name"
-            axisLine={{ stroke: "#d6d3d1" }}
+            axisLine={{ stroke: "#cbd5e1" }}
             tickLine={false}
             tick={<CustomYAxisTick />}
           />
@@ -108,10 +111,16 @@ function RechartsBar({ data }) {
           />
           <Bar
             dataKey="value"
-            fill="#000000"
             radius={[0, 4, 4, 0]}
-            background={{ fill: "#f5f5f4", radius: [0, 4, 4, 0] }}
-          />
+            background={{ fill: "#e2e8f0", radius: [0, 4, 4, 0] }}
+          >
+            {data.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={colors[index % colors.length]}
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -120,11 +129,11 @@ function RechartsBar({ data }) {
 
 function RechartsDonut({ data }) {
   return (
-    <div className="flex flex-col items-center gap-6 p-8 lg:flex-row lg:items-center lg:justify-center">
-      <div className="relative h-[300px] w-[300px]">
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold text-black">100%</span>
-          <span className="text-sm text-stone-500">total share</span>
+    <div className="flex flex-col items-center gap-6 p-4 lg:flex-row lg:items-center lg:justify-center">
+      <div className="relative h-[300px] w-full max-w-[300px]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+          <span className="text-3xl font-bold text-slate-900">100%</span>
+          <span className="text-sm text-slate-500">total share</span>
         </div>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -134,10 +143,12 @@ function RechartsDonut({ data }) {
               outerRadius={130}
               paddingAngle={2}
               dataKey="value"
-              stroke="none"
+              stroke="#ffffff"
+              strokeWidth={2}
+              minAngle={8}
             >
               {data.map((entry, index) => {
-                const colors = ["#000", "#444", "#777", "#aaa", "#ddd"];
+                const colors = ["#4338ca", "#0ea5e9", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6", "#60a5fa", "#38bdf8", "#f97316", "#22c55e"];
                 return (
                   <Cell
                     key={`cell-${index}`}
@@ -151,20 +162,20 @@ function RechartsDonut({ data }) {
         </ResponsiveContainer>
       </div>
 
-      <div className="grid w-full max-w-sm gap-3">
+      <div className="grid w-full gap-3 sm:max-w-md">
         {data.map((entry, index) => {
-          const colors = ["#000", "#444", "#777", "#aaa", "#ddd"];
+          const colors = ["#4338ca", "#0ea5e9", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6", "#60a5fa", "#38bdf8", "#f97316", "#22c55e"];
           return (
             <div
               key={`${entry.name}-legend-${index}`}
-              className="flex items-center gap-3 text-sm text-stone-700"
+              className="flex items-center gap-3 text-sm text-slate-700"
             >
               <span
                 className="h-3 w-3 shrink-0 rounded-full"
                 style={{ backgroundColor: colors[index % colors.length] }}
               />
               <span className="flex-1">{entry.name}</span>
-              <span className="font-semibold text-stone-900">
+              <span className="font-semibold text-slate-900">
                 {entry.value}%
               </span>
             </div>
@@ -175,12 +186,145 @@ function RechartsDonut({ data }) {
   );
 }
 
+function RechartsVerticalBar({ data }) {
+  const colors = ["#4338ca", "#0ea5e9", "#14b8a6", "#f59e0b", "#ec4899", "#8b5cf6", "#60a5fa", "#38bdf8", "#f97316", "#22c55e"];
+  return (
+    <div className="h-[340px] w-full pt-4 sm:h-[400px]">
+      <div className="mb-2 flex justify-end text-xs text-slate-500">
+        Unit: %
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          layout="vertical"
+          data={data}
+          margin={{ top: 10, right: 10, left: 90, bottom: 10 }}
+          barSize={28}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            horizontal={false}
+            stroke="#e2e8f0"
+          />
+          <XAxis
+            type="number"
+            domain={[0, 100]}
+            tickCount={6}
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: "#475569", fontSize: 12 }}
+          />
+          <YAxis
+            type="category"
+            dataKey="name"
+            axisLine={{ stroke: "#cbd5e1" }}
+            tickLine={false}
+            tick={<CustomYAxisTick />}
+          />
+          <Tooltip cursor={{ fill: "transparent" }} content={<CustomTooltip />} />
+          <Bar
+            dataKey="value"
+            radius={[0, 8, 8, 0]}
+            background={{ fill: "#e2e8f0", radius: [0, 8, 8, 0] }}
+          >
+            {data.map((_, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={colors[index % colors.length]}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function RechartsLineChart({ data }) {
+  return (
+    <div className="h-[340px] w-full pt-4 sm:h-[400px]">
+      <div className="mb-2 flex justify-end text-xs text-slate-500">
+        Unit: %
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <XAxis
+            dataKey="name"
+            tick={{ fill: "#475569", fontSize: 11 }}
+            angle={-45}
+            textAnchor="end"
+            height={80}
+          />
+          <YAxis
+            domain={[0, 100]}
+            tick={{ fill: "#475569", fontSize: 12 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke="#4338ca"
+            strokeWidth={3}
+            dot={{ fill: "#4338ca", r: 5 }}
+            activeDot={{ r: 7 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function RechartsAreaChart({ data }) {
+  return (
+    <div className="h-[340px] w-full pt-4 sm:h-[400px]">
+      <div className="mb-2 flex justify-end text-xs text-slate-500">
+        Unit: %
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#4338ca" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#4338ca" stopOpacity={0.1} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <XAxis
+            dataKey="name"
+            tick={{ fill: "#475569", fontSize: 11 }}
+            angle={-45}
+            textAnchor="end"
+            height={80}
+          />
+          <YAxis
+            domain={[0, 100]}
+            tick={{ fill: "#475569", fontSize: 12 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#4338ca"
+            strokeWidth={2}
+            fillOpacity={1}
+            fill="url(#colorValue)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export default function ChartRenderer({ type, data }) {
   const safeData = buildSafeData(data);
 
   if (!safeData.length) {
     return (
-      <div className="p-8 text-center text-stone-500">
+      <div className="p-8 text-center text-slate-500">
         No chart data available.
       </div>
     );
@@ -190,6 +334,12 @@ export default function ChartRenderer({ type, data }) {
     <div className="mt-2 w-full">
       {type === "donut" ? (
         <RechartsDonut data={safeData} />
+      ) : type === "vertical-bar" ? (
+        <RechartsVerticalBar data={safeData} />
+      ) : type === "line" ? (
+        <RechartsLineChart data={safeData} />
+      ) : type === "area" ? (
+        <RechartsAreaChart data={safeData} />
       ) : (
         <RechartsBar data={safeData} />
       )}

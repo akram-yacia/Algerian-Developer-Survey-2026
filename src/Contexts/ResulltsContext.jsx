@@ -33,7 +33,6 @@ export function ResultsProvider({ children }) {
         const mappedData = results.map((s) => {
           let mappedId = s.slug;
           if (s.slug === "background") mappedId = "overview";
-          if (s.slug === "opinions") mappedId = "technologies";
           return { ...s, mappedId };
         });
 
